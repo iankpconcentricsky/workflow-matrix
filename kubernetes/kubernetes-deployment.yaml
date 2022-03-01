@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeapp
+  labels:
+    app: kubeapp
+spec:
+  selector:
+    matchLabels:
+      app: kubeapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubeapp
+    spec:
+      containers:
+      - name: kubeapp-api
+        image: us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api
+        ports:
+        - containerPort: 3333
+      - name: kubeapp-ui
+        image: us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui
+        ports:
+        - containerPort: 8080
