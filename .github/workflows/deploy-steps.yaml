@@ -1,0 +1,72 @@
+on:
+  workflow_call:
+    secrets:
+      gcp_service_account_key:
+        required: true
+    inputs:
+      title:
+        type: string
+        required: true
+      cluster_name:
+        type: string
+        required: true
+      docker_server:
+        type: string
+        required: true
+      service_account_email:
+        type: string
+        required: true
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo vars
+        run: |-
+          "echo ${{ secrets }}"
+          "echo ${{ inputs }}"
+          "echo ${{ github.event }}"
+          "echo ${{ github }}"
+
+      - name: Authorize To Google Cloud
+        uses: github-google-actions/auth@v0
+        with:
+          credential_json: "${{ secrets.gcp_service_account_key }}"
+
+
+      - name: Install Gcloud CLI
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Install Kubernetes CLI tools
+        uses: yokawasa/action-setup-kube-tools@v0.7.1
+        with:
+          setup-tools: |
+            kubectl
+            helm
+            kustomize
+
+      - name: Echo inputs
+        run: "echo gcloud auth configure-docker ${{ inputs.docker_server }}"
+
+      - name: Echo inputs
+        run: "echo gcloud auth configure-docker ${{ github.event.inputs.docker_server }}"
+
+      - name: Configure Artifact Registry Authorization (within .docker/config)
+        run: |
+          "gcloud auth configure-docker ${{ github.event.inputs.docker_server }}"
+
+      - name: Configure Kubectl CLI To Cluster (within .kube/config)
+        run: |
+          "gcloud container clusters get-credentials ${{ github.event.inputs.cluster_name }}"
+
+      - name: Create Cluster Artifact Registry Authorization Token Secret
+        run: |
+          "kubectl create secret docker-registry docker-oauth-token-secret --docker-username=oauth2token --docker-password=$(gcloud auth print-access-token) --docker-server=${{ github.event.inputs.docker_server }} --docker-email=${{ github.event.inputs.service_account_email }}"
+
+      - name: Configure Cluster Artifact Registry Authorization Secret
+        run: |-
+          "kubectl patch serviceaccount default -p '{\"imagePullSecrets\": [{\"name\": \"docker-oauth-token-secret\"}]'"
+
+      - name: Deploy To Cluster
+        run: |-
+          "kubectl -f ./kubernetes/"

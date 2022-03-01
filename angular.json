@@ -6,6 +6,46 @@
       "sourceRoot": "apps/api/src",
       "projectType": "application",
       "architect": {
+        "docker-build": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "echo Building API...",
+                    "docker build --no-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api --file ./apps/api/Dockerfile .",
+                    "docker image prune -f"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-run": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "docker run -it -d -p 3333:3333 --rm --name kubeapp-api kubeapp-api"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-debug": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "docker run -it -d -p 3333:3333 --name kubeapp-api kubeapp-api",
+                    "docker logs -t $(docker ps -lq)",
+                    "docker stop kubeapp-api && docker rm kubeapp-api"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-stop": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "docker stop kubeapp-api"
+                ],
+                "parallel": false
+            }
+        },
         "build": {
           "builder": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
@@ -68,12 +108,54 @@
       },
       "tags": []
     },
-    "kubeapp": {
+    "ui": {
       "projectType": "application",
       "root": "apps/kubeapp",
       "sourceRoot": "apps/kubeapp/src",
-      "prefix": "kubeapp",
+      "prefix": "ui",
       "architect": {
+        "docker-build": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "echo Building UI...",
+                    "nx build ui",
+                    "cp ./apps/kubeapp/nginx.conf ./dist/apps/kubeapp/",
+                    "docker build --no-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
+                    "docker image prune -f"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-run": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "docker run -it -d -p 8080:80 --rm --name kubeapp-ui kubeapp-ui"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-debug": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "docker run -it -d -p 8080:80 --name kubeapp-ui kubeapp-ui",
+                    "docker logs -t $(docker ps -lq)",
+                    "docker stop kubeapp-ui && docker rm kubeapp-ui"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-stop": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "docker stop kubeapp-ui"
+                ],
+                "parallel": false
+            }
+        },
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "outputs": ["{options.outputPath}"],
@@ -127,10 +209,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "kubeapp:build:production"
+              "browserTarget": "ui:build:production"
             },
             "development": {
-              "browserTarget": "kubeapp:build:development"
+              "browserTarget": "ui:build:development"
             }
           },
           "defaultConfiguration": "development",
@@ -141,7 +223,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "kubeapp:build"
+            "browserTarget": "ui:build"
           }
         },
         "lint": {
@@ -173,11 +255,11 @@
           "builder": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/kubeapp-e2e/cypress.json",
-            "devServerTarget": "kubeapp:serve:development"
+            "devServerTarget": "ui:serve:development"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "kubeapp:serve:production"
+              "devServerTarget": "ui:serve:production"
             }
           }
         },
@@ -190,7 +272,7 @@
         }
       },
       "tags": [],
-      "implicitDependencies": ["kubeapp"]
+      "implicitDependencies": ["ui"]
     }
   }
 }

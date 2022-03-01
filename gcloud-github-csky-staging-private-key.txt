@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "concentric-sky-development",
+  "private_key_id": "59e4f9f11814dd674255d4d846f3004ccab267fa",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCnyNk4/H5gYuQA\nTUt/mLzUBDM7ffvFPtJmui/js4tYQtocZW4Lut/2KIezjFCdOwG3M3fQCn9kilqm\nFVIEUmOoGJZbdQ+dSz8BRQAgs90r+TaRRGWuxpq6szzCxTwqJcoJuuTnRBSDZVUp\n9xLdfOL08Ar1rgfCaV1RNar4wPMLYItuYteA5sYTcd6EnrdwvcRtlfb9nLLvzSnB\nX/+ovxJBex4p41NTUaY2s2agL9qYuZ4xul6r/fEeziQ9z4GfVn5LC3GgHAj9avCj\nyeyKAE90gzt2OW3OgETnmhhPqb/+Ha6lmnR6WL+qig2pzcLj8B8bKY1/solM4An6\nTCwkbOoDAgMBAAECggEACqOCHopoCv2KPnioNl19b6Yah4Wr/qxGlAvvOG1sgvqu\nMMm/qg+93rJgNGLLw8R3jeG+EZtwy3O4XrqQWkTNG93/PqpUBKG+S3rQEMLG3eBt\n9NUU63mdWwQ9cI4oC/YccvR+Sim3cUNuHHyVniSqkWRdFYnk5Q9gQuN3xVEauBhb\nRKQAWbA4V0Tas0pNZzzExpAKDuZR0/0h8oRgdfeu7dN2cgR3/TKiM7BC14VjkkEm\nkNyWen3f3CuywZgngtvLHO/BL2EfqcV8q9ShYw6uqk15haRNbnaE6dREu5zYdwCo\ncD2grLqJv3N1DftQNT4KmnlHGei4YHb5/6OeO9m4kQKBgQDUTDFmv1P8T6tGrs1Y\nJ8ksdzU84taAVHAhbtMKOCJU03gOUq73hPO/yk2prvaIE+kdO679kzKe+XRYPngw\nUb1Iiwn+9cw5e0I5QbaQcDGvgHb0VlTn4acH3V3oLrjRn68PU+aCmuND1PELgWD7\nJWc6v5NcOKChExmSDxZsR2xoswKBgQDKUuAXasR4igJKU70PuDQjcl6YGjJM9HJh\n8tuhPD0yYu4By8BTM7MbKxkpOgbkk17Slkz3v0qDhQUYJ3OWfB9TddddN+xBDZfL\nOy8pO/aAGrozKEgiUv4tpeZmKeZcb4z/Tl9GGI3B8Q+ZEDjlpm6I16qr6/9wVKzI\nB3Lemy4BcQKBgQDQDQN08Bf8co8lq/UtaYArhX+09ZDFHvrsqNFFeJGck8laMAms\nJK1DzZyiqAaOgQS5U15Av1qilVFBkabzo4deanQXWwcTZgoWVqH1lx36ImlxNpHq\n1Sd9+6EmA3O4a0eCO/TxFZ2XQj4fymEifxtVZZ2iiRRSBofOrd6Jqs1BJQKBgEDn\nlTvt5FlG7LUrZ9tDHHbCmdXxkXFeedMyNYLj8D3ZvsCUvH30d+CfUtMG6m8pV6H2\n1Xokw6KtaZT2Ev6TkvkTNKOS7RdxZOCte9OeiNVPvavroDhip2e9cMwVZPECWBkO\n60FxXwh4bKiNq7MAUTVU+ktsyeUfRM5mlVMUNQ4BAoGAcLCh5QSIZKCwYPlvsJZ+\n4/mgXyO24eMsTMenxiyq4P7DNvZnvBo4PaI5RlzWlVa9IB+wrP4zNoARn8WucBqt\n3F12rcamTDyALXrtr7lkfdOHnojqXKidOr6kcEXgUxbeonLgfLg1PYjUAjcsDCFJ\nJigZ5KeP6lz7/byppIwmitk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "github-csky-staging@concentric-sky-development.iam.gserviceaccount.com",
+  "client_id": "100413131897227926824",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/github-csky-staging%40concentric-sky-development.iam.gserviceaccount.com"
+}

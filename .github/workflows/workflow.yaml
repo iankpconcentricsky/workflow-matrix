@@ -1,0 +1,95 @@
+on:
+  push:
+    branches: [develop, staging, main]
+  pull_request:
+    branches: [staging]
+    type: [open]
+
+env:
+  CLUSTER_ZONE: us-east1-b
+  DOCKER_SERVER: us-east1-docker.pkg.dev
+  SERVICE_ACCOUNT_EMAIL: github-csky-staging@concentric-sky-development.iam.gserviceaccount.com
+  REVIEW_CLUSTER_NAME: iposs-cluster
+  STAGING_CLUSTER_NAME: iposs-cluster
+  PRODUCTION_CLUSTER_NAME: iposs-cluster
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    name: Run Code Tests
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: "echo Tests pass!"
+
+
+  Build:
+    name: Create Docker Images
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: [Test]
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Find Last Successful Workflow Commit
+        id: lastSuccessfulWorkflowCommit
+        uses: nrwl/nx-set-shas@v2.0.2
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: Install Project Dependencies
+        run: npm install
+
+      - name: Build Images
+        run: |
+          npx nx affected --target=build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
+
+
+  DeployReview:
+    name: Deploy Images To Review Cluster
+    if: github.event_name == 'push' && github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    needs: [Build]
+    environment:
+      name: Review
+      url: http://example.com/#review
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Authorize To Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
+
+      - name: Install Gcloud CLI
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Install Kubernetes CLI tools
+        uses: yokawasa/action-setup-kube-tools@v0.7.1
+        with:
+          setup-tools: |
+            kubectl
+
+      - name: Show Gcloud Identity
+        run: gcloud auth list
+
+      - name: Configure Artifact Registry Authorization (within .docker/config)
+        run: "gcloud auth configure-docker ${{ env.DOCKER_SERVER }}"
+
+      - name: Configure Kubectl CLI To Cluster (within .kube/config)
+        run: "gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}"
+
+      - name: Deploy To Cluster
+        run: "kubectl apply -f ./kubernetes/"
