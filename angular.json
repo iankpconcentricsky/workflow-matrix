@@ -11,8 +11,8 @@
             "options": {
                 "commands": [
                     "echo Building API...",
-                    "docker build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api --file ./apps/api/Dockerfile .",
-                    "docker image prune -f"
+                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api --file ./apps/api/Dockerfile .",
+                    "docker image prune --force"
                 ],
                 "parallel": false
             }
@@ -121,8 +121,8 @@
                     "echo Building UI...",
                     "nx build ui",
                     "cp ./apps/kubeapp/nginx.conf ./dist/apps/kubeapp/",
-                    "docker build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
-                    "docker image prune -f"
+                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
+                    "docker image prune --force"
                 ],
                 "parallel": false
             }

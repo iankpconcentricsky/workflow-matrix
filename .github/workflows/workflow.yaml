@@ -60,7 +60,7 @@ jobs:
 
       - name: Build Images
         run: |
-          npx nx affected --target=build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
+          npx nx affected --target=docker-build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
 
 
   DeployReview:
