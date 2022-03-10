@@ -59,8 +59,12 @@ jobs:
           key: ${{ runner.os }}-docker-cache
 
       - name: Build Images
-        run: |
-          npx nx affected --target=docker-build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
+        run: npx nx affected --target=docker-build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
+
+      - name: Push Images
+        run:  |
+          docker image ls
+          npx nx affected --target=docker-push
 
 
   DeployReview:

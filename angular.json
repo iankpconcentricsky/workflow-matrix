@@ -17,6 +17,16 @@
                 "parallel": false
             }
         },
+        "docker-push": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "echo Pushing API...",
+                    "docker push us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api:latest"
+                ],
+                "parallel": false
+            }
+        },
         "docker-run": {
             "builder": "@nrwl/workspace:run-commands",
             "options": {
@@ -123,6 +133,16 @@
                     "cp ./apps/kubeapp/nginx.conf ./dist/apps/kubeapp/",
                     "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:latest --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
                     "docker image prune --force"
+                ],
+                "parallel": false
+            }
+        },
+        "docker-push": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    "echo Pushing UI...",
+                    "docker push us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:latest"
                 ],
                 "parallel": false
             }
