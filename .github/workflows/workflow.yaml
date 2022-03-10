@@ -58,9 +58,6 @@ jobs:
           path: ./docker-cache/
           key: ${{ runner.os }}-docker-cache
 
-      - name: Build Images
-        run: npx nx affected --target=docker-build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
-
       - name: Authorize To Google Cloud
         uses: google-github-actions/auth@v0
         with:
@@ -69,10 +66,9 @@ jobs:
       - name: Configure Artifact Registry Authorization (within .docker/config)
         run: "gcloud auth configure-docker ${{ env.DOCKER_SERVER }}"
 
-      - name: Push Images
-        run:  |
-          docker image ls
-          npx nx affected --target=docker-push
+      - name: Build, Push Images
+        run: 'npx nx affected --target=docker-build --args="--version=${{ github.sha }} --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}'
+
 
 
   DeployReview:
@@ -107,4 +103,7 @@ jobs:
         run: "gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}"
 
       - name: Deploy To Cluster
-        run: "kubectl apply -f ./kubernetes/"
+        run: |
+          sed -i 's/:latest/:${{ github.sha }}/' ./kubernetes/kubernetes-deployment.yaml
+          cat ./kubernetes/kubernetes-deployment.yaml
+          kubectl apply -f ./kubernetes/

@@ -10,19 +10,15 @@
             "builder": "@nrwl/workspace:run-commands",
             "options": {
                 "commands": [
-                    "echo Building API...",
-                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api --load --file ./apps/api/Dockerfile .",
-                    "docker image prune --force"
-                ],
-                "parallel": false
-            }
-        },
-        "docker-push": {
-            "builder": "@nrwl/workspace:run-commands",
-            "options": {
-                "commands": [
-                    "echo Pushing API...",
-                    "docker push us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api"
+                    {
+                        "command": "echo Building API ...",
+                        "forwardAllArgs": false
+                    },
+                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api:{args.version} --output=type={args.outputType} --file ./apps/api/Dockerfile .",
+                    {
+                        "command": "docker image prune --force",
+                        "forwardAllArgs": false
+                    }
                 ],
                 "parallel": false
             }
@@ -128,21 +124,23 @@
             "builder": "@nrwl/workspace:run-commands",
             "options": {
                 "commands": [
-                    "echo Building UI...",
-                    "nx build ui",
-                    "cp ./apps/kubeapp/nginx.conf ./dist/apps/kubeapp/",
-                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui --load --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
-                    "docker image prune --force"
-                ],
-                "parallel": false
-            }
-        },
-        "docker-push": {
-            "builder": "@nrwl/workspace:run-commands",
-            "options": {
-                "commands": [
-                    "echo Pushing UI...",
-                    "docker push us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui"
+                    {
+                        "command": "echo Building UI ...",
+                        "forwardAllArgs": false
+                    },
+                    {
+                        "command": "nx build ui",
+                        "forwardAllArgs": false
+                    },
+                    {
+                        "command": "cp ./apps/kubeapp/nginx.conf ./dist/apps/kubeapp/",
+                        "forwardAllArgs": false
+                    },
+                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:{args.version} --output=type={args.outputType} --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
+                    {
+                        "command": "docker image prune --force",
+                        "forwardAllArgs": false
+                    }
                 ],
                 "parallel": false
             }
