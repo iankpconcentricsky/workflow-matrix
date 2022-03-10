@@ -61,6 +61,14 @@ jobs:
       - name: Build Images
         run: npx nx affected --target=docker-build --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
 
+      - name: Authorize To Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
+
+      - name: Configure Artifact Registry Authorization (within .docker/config)
+        run: "gcloud auth configure-docker ${{ env.DOCKER_SERVER }}"
+
       - name: Push Images
         run:  |
           docker image ls
@@ -94,9 +102,6 @@ jobs:
         with:
           setup-tools: |
             kubectl
-
-      - name: Configure Artifact Registry Authorization (within .docker/config)
-        run: "gcloud auth configure-docker ${{ env.DOCKER_SERVER }}"
 
       - name: Configure Kubectl CLI To Cluster (within .kube/config)
         run: "gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}"
