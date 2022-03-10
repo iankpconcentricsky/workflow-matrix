@@ -3,7 +3,7 @@ import { Message } from '@kubeapp/api-interfaces';
 
 @Injectable()
 export class AppService {
-  getData(): any {
-    return { message: process.env };
+  getData(): Message {
+    return { message: process.env.NODE_ENV };
   }
 }
