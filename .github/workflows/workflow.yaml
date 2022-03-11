@@ -64,10 +64,10 @@ jobs:
           credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}"
 
       - name: Configure Artifact Registry Authorization (within .docker/config)
-        run: "gcloud auth configure-docker ${{ env.DOCKER_SERVER }}"
+        run: gcloud auth configure-docker ${{ env.DOCKER_SERVER }}
 
       - name: Build, Push Images
-        run: 'npx nx affected --target=docker-build --args="--version=${{ github.sha }} --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}'
+        run: npx nx affected --target=docker-build --args="--version=${{ github.sha }} --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
 
 
 
@@ -100,7 +100,7 @@ jobs:
             kubectl
 
       - name: Configure Kubectl CLI To Cluster (within .kube/config)
-        run: "gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}"
+        run: gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}
 
       - name: Deploy To Cluster
         run: |
