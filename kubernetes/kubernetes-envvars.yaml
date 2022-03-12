@@ -4,3 +4,14 @@ metadata:
   name: kubeapp-api-envvars
 data:
   DATABASE_HOST: "https://db.example.com:4201/project_name/mysql"
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: kubeapp-api-secret-envvars
+data:
+  DATABASE_USERNAME: |-
+    YWRtaW4K
+  DATABASE_PASSWORD: |-
+    UGFzc3dvcmQxMjM0LQo=

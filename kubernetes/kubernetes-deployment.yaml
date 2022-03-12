@@ -25,6 +25,16 @@ spec:
               configMapKeyRef:
                 name: kubeapp-api-envvars
                 key: DATABASE_HOST
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kubeapp-api-secret-envvars
+                key: DATABASE_PASSWORD
+          - name: DATABASE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: kubeapp-api-secret-envvars
+                key: DATABASE_USERNAME
       - name: kubeapp-ui
         image: us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:latest
         ports:
