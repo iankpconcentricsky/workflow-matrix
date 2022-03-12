@@ -67,7 +67,7 @@ jobs:
         run: gcloud auth configure-docker ${{ env.DOCKER_SERVER }}
 
       - name: Build, Push Images
-        run: npx nx affected --target=docker-build --args="--version=${{ github.sha }} --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
+        run: npx nx affected --target=docker-build --args="--version=latest --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
 
 
 
@@ -103,7 +103,9 @@ jobs:
         run: gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}
 
       - name: Deploy To Cluster
+        run: kubectl apply -f ./kubernetes/
+
+      - name: Rollout change
         run: |
-          sed -i 's/:latest/:${{ github.sha }}/' ./kubernetes/kubernetes-deployment.yaml
-          cat ./kubernetes/kubernetes-deployment.yaml
-          kubectl apply -f ./kubernetes/
+          kubectl rollout restart deployment/kubeapp
+          kubectl rollout status -w deployment/kubeapp
