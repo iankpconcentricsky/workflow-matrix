@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: gcpsm-service-account-secret
+  labels:
+    type: gcpsm
+stringData:
+  gcpsm-private-key: |-

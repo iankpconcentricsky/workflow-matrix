@@ -102,10 +102,15 @@ jobs:
       - name: Configure Kubectl CLI To Cluster (within .kube/config)
         run: gcloud container clusters get-credentials ${{ env.REVIEW_CLUSTER_NAME }} --zone ${{ env.CLUSTER_ZONE }}
 
+      - name: Add Github Secrets GCP Service Account Key
+        run: |
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" | base64 | sed "s/^/    /" >> ./kubernetes/gcp-private-service-acccount-key.yaml
+          cat ./kubernetes/gcp-private-service-acccount-key.yaml
+
       - name: Deploy To Cluster
         run: kubectl apply -f ./kubernetes/
 
-      - name: Rollout change
-        run: |
-          kubectl rollout restart deployment/kubeapp
-          kubectl rollout status -w deployment/kubeapp
+      #- name: Rollout change
+      #  run: |
+      #    kubectl rollout restart deployment/kubeapp
+      #    kubectl rollout status -w deployment/kubeapp

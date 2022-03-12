@@ -20,6 +20,11 @@ spec:
         ports:
         - containerPort: 3333
         env:
+          - name: EXTERNAL_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: kubeapp-external-secret
+                key: cluster-external-secret-key
           - name: DATABASE_HOST
             valueFrom:
               configMapKeyRef:
