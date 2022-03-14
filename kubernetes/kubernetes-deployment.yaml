@@ -24,7 +24,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: kubeapp-external-secret
-                key: cluster-external-secret-key
+                key: EXTERNAL_SECRET_KEY
           - name: DATABASE_HOST
             valueFrom:
               configMapKeyRef:

@@ -104,11 +104,19 @@ jobs:
 
       - name: Add Github Secrets GCP Service Account Key
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" | base64 | sed "s/^/    /" >> ./kubernetes/gcp-private-service-acccount-key.yaml
-          cat ./kubernetes/gcp-private-service-acccount-key.yaml
+          kubectl delete secret gcpsm-service-account-secret --ignore-not-found=true
+          kubectl create secret generic gcpsm-service-account-secret --from-literal=gcpsm-private-key='${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
+
+      # - name: Add Github Secrets GCP Service Account Key
+      #   run: |
+      #     echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" | base64 | sed "s/^/    /" >> ./kubernetes/gcp-private-service-acccount-key.yaml
+      #     cat ./kubernetes/gcp-private-service-acccount-key.yaml
 
       - name: Deploy To Cluster
         run: kubectl apply -f ./kubernetes/
+
+      - name: Describe External Secret
+        run: kubectl describe externalsecret.external-secrets.io/kubeapp-external-secret | grep external-secrets
 
       #- name: Rollout change
       #  run: |
