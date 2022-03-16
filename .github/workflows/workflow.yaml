@@ -38,7 +38,7 @@ jobs:
 
       - name: Find Last Successful Workflow Commit
         id: lastSuccessfulWorkflowCommit
-        uses: nrwl/nx-set-shas@v2.0.2
+        uses: nrwl/nx-set-shas@v2
 
       - name: Install Node
         uses: actions/setup-node@v2
@@ -67,7 +67,7 @@ jobs:
         run: gcloud auth configure-docker ${{ env.DOCKER_SERVER }}
 
       - name: Build, Push Images
-        run: npx nx affected --target=docker-build --args="--version=latest --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
+        run: npx nx affected --target=docker-build --args="--version=$(git rev-parse --short ${{ github.sha }}) --output-type=registry" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
 
 
 
@@ -84,6 +84,19 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: Install Project Dependencies
+        run: npm install
+
+      - name: Find Last Successful Workflow Commit
+        id: lastSuccessfulWorkflowCommit
+        uses: nrwl/nx-set-shas@v2
 
       - name: Authorize To Google Cloud
         uses: google-github-actions/auth@v0
@@ -107,16 +120,11 @@ jobs:
           kubectl delete secret gcpsm-service-account-secret --ignore-not-found=true
           kubectl create secret generic gcpsm-service-account-secret --from-literal=gcpsm-private-key='${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}'
 
-      # - name: Add Github Secrets GCP Service Account Key
-      #   run: |
-      #     echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" | base64 | sed "s/^/    /" >> ./kubernetes/gcp-private-service-acccount-key.yaml
-      #     cat ./kubernetes/gcp-private-service-acccount-key.yaml
-
       - name: Deploy To Cluster
         run: kubectl apply -f ./kubernetes/
 
-      - name: Describe External Secret
-        run: kubectl describe externalsecret.external-secrets.io/kubeapp-external-secret | grep external-secrets
+      - name: Rollout new images
+        run: npx nx affected --target=kubectl-set-image --args="--version=$(git rev-parse --short ${{ github.sha }}) --deployment-name=kubeapp" --base=${{ steps.lastSuccessfulWorkflowCommit.outputs.base }}
 
       #- name: Rollout change
       #  run: |

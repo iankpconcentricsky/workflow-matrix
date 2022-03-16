@@ -14,11 +14,24 @@
                         "command": "echo Building API ...",
                         "forwardAllArgs": false
                     },
-                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api:{args.version} --output=type={args.outputType} --file ./apps/api/Dockerfile .",
+                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api:{args.version} --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api:latest --output=type={args.outputType} --file ./apps/api/Dockerfile .",
                     {
                         "command": "docker image prune --force",
                         "forwardAllArgs": false
                     }
+                ],
+                "parallel": false
+            }
+        },
+        "kubectl-rollout-image": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    {
+                        "command": "echo Rolling out new API image to cluster ...",
+                        "forwardAllArgs": false
+                    },
+                    "kubectl set image deployment {args.deploymentName} kubeapp-api=us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-api:{args.version}"
                 ],
                 "parallel": false
             }
@@ -136,11 +149,24 @@
                         "command": "cp ./apps/kubeapp/nginx.conf ./dist/apps/kubeapp/",
                         "forwardAllArgs": false
                     },
-                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:{args.version} --output=type={args.outputType} --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
+                    "docker buildx build --cache-to=type=local,dest=./docker-cache --cache-from=type=local,src=./docker-cache --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:{args.version} --tag us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:latest --output=type={args.outputType} --file ./apps/kubeapp/Dockerfile ./dist/apps/kubeapp/",
                     {
                         "command": "docker image prune --force",
                         "forwardAllArgs": false
                     }
+                ],
+                "parallel": false
+            }
+        },
+        "kubectl-rollout-image": {
+            "builder": "@nrwl/workspace:run-commands",
+            "options": {
+                "commands": [
+                    {
+                        "command": "echo Rolling out new UI image to cluster ...",
+                        "forwardAllArgs": false
+                    },
+                    "kubectl set image deployment {args.deploymentName} kubeapp-ui=us-east1-docker.pkg.dev/concentric-sky-development/iposs/kubeapp-ui:{args.version}"
                 ],
                 "parallel": false
             }
